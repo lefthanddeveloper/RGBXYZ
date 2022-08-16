@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,30 +7,49 @@ namespace RGBXYZ {
 
     public class MovingSphere : MonoBehaviour
     {
-        private MeshRenderer meshRend;
-        private int numOnSide;
-        private float distance;
+        [SerializeField] private MeshRenderer meshRend;
 
-        void Start()
-        {
-            RgbXyzCubeCreator rgbXyz = GetComponentInParent<RgbXyzCubeCreator>();
-            numOnSide = rgbXyz.NumOnSide;
-            distance = rgbXyz.Distance;
+		private int numOnSide;
+		private float distance;
+		private float startTime;
+		private float sineWaveHeight;
+		private bool isInitialized = false;
+        public void Init(int numOnSide, float distance, float lowestY, float highestY)
+		{
+			this.numOnSide = numOnSide;
+			this.distance = distance;
+			sineWaveHeight = (highestY - lowestY) / 2f;
 
-            meshRend = GetComponentInChildren<MeshRenderer>();
-        }
-
+			startTime = Time.time;
+			isInitialized = true;
+		}
 
         void Update()
         {
-            Vector3 currentPos = transform.position;
-            float xValue = currentPos.x + ((numOnSide - 1) * distance / 2f);
-            float yValue = currentPos.y + ((numOnSide - 1) * distance / 2f);
-            float zValue = currentPos.z + ((numOnSide - 1) * distance / 2f);
-            Color color = new Color(xValue /(numOnSide - 1) * 2f, yValue / (numOnSide - 1) * 2f, zValue /(numOnSide - 1) * 2f);
+			if (!isInitialized) return;
+			UpdatePosition();
+			UpdateColor();
+		}
 
-            meshRend.material.color = color;
-        }
+		private void UpdatePosition()
+		{
+			float passedTime = Time.time - startTime;
+			float y = sineWaveHeight * Mathf.Sin(passedTime + 1.5f * Mathf.PI);
+			Vector3 curPos = transform.localPosition;
+			curPos.y = y;
+			this.transform.localPosition = curPos;
+		}
+
+		private void UpdateColor()
+		{
+			Vector3 currentPos = transform.localPosition;
+			float xValue = currentPos.x + ((numOnSide - 1) * distance / 2f);
+			float yValue = currentPos.y + ((numOnSide - 1) * distance / 2f);
+			float zValue = currentPos.z + ((numOnSide - 1) * distance / 2f);
+			Color color = new Color(xValue / (numOnSide - 1) * 2f, yValue / (numOnSide - 1) * 2f, zValue / (numOnSide - 1) * 2f);
+
+			meshRend.material.color = color;
+		}
     }
 
 }
