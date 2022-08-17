@@ -110,7 +110,7 @@ Transform:
   m_GameObject: {fileID: 7519449725496743549}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.99, y: 1, z: 0.99}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4633587903929394388}
@@ -132,6 +132,7 @@ MonoBehaviour:
   meshRend: {fileID: 3737804015295246041}
   defaultColor: {r: 1, g: 1, b: 1, a: 0.3137255}
   highlightColor: {r: 1, g: 0.94117653, b: 0, a: 0.92941177}
+  occupiedColor: {r: 1, g: 0, b: 0, a: 0.8235294}
 --- !u!65 &7851399128288904654
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -26,7 +26,7 @@ namespace RGBXYZ
 			{
 				for(int x=0; x < NumOnSide; x++)
 				{
-					Vector3 pos = new Vector3((float)x * Distance - ((float)(NumOnSide - 1) * Distance / 2f), lowestY * 1.075f, (float)z * Distance - ((float)(NumOnSide - 1) * Distance / 2f));
+					Vector3 pos = new Vector3((float)x * Distance - ((float)(NumOnSide - 1) * Distance / 2f), lowestY * 1.1f, (float)z * Distance - ((float)(NumOnSide - 1) * Distance / 2f));
 					var instantiator = Instantiate(sphereInstantiator, this.transform);
 					instantiator.transform.localPosition = pos;
 					instantiator.transform.localEulerAngles = Vector3.zero;
@@ -39,11 +39,20 @@ namespace RGBXYZ
 
 		private void OnClickInstantiator(MovingSphereInstantiator instantiator)
 		{
-			Vector3 pos = new Vector3(instantiator.transform.position.x, lowestY, instantiator.transform.position.z);
-			var movingSphere = Instantiate(movingSpherePrefab, this.transform);
-			movingSphere.transform.localPosition = pos;
-			movingSphere.transform.localEulerAngles = Vector3.zero;
-			movingSphere.Init(NumOnSide, Distance, lowestY, highestY);
+            if (instantiator.IsOccupied)
+            {
+				instantiator.Empty();
+            }
+            else
+            {
+				Vector3 pos = new Vector3(instantiator.transform.position.x, lowestY, instantiator.transform.position.z);
+				var movingSphere = Instantiate(movingSpherePrefab, this.transform);
+				movingSphere.transform.localPosition = pos;
+				movingSphere.transform.localEulerAngles = Vector3.zero;
+				movingSphere.Init(NumOnSide, Distance, lowestY, highestY);
+
+				instantiator.OccupyWith(movingSphere);
+			}
 		}
 	}
 }
