@@ -11,8 +11,14 @@ namespace RGBXYZ
         [SerializeField] private PointSphere pointSpherePrefab;
 
         private List<PointSphere> createdSpheres = new List<PointSphere>();
-        
-        void Start()
+
+		protected override void Awake()
+		{
+			maxNumOfSphere = NumOnSide * NumOnSide * NumOnSide;
+			base.Awake();
+		}
+
+		void Start()
         {
             StartCoroutine(CreateRgbXyzCube(OnCreationDone));
         }
@@ -36,6 +42,7 @@ namespace RGBXYZ
 						float z = (pos.z + ((NumOnSide - 1) * Distance / 2f)) / (NumOnSide - 1) * 2f;
 						pointSphere.Init(new Color(x, y, z));
 						createdSpheres.Add(pointSphere);
+						uiGauge.UpdateCurrentNum(createdSpheres.Count);
 						yield return term;
 					}
 				}
@@ -55,6 +62,7 @@ namespace RGBXYZ
 			for (int i = 0; i < createdSpheres.Count; i++)
 			{
 				createdSpheres[i].ShowSphere();
+				uiGauge.UpdateCurrentNum(i + 1);
 				yield return term;
 			}
 
@@ -68,6 +76,7 @@ namespace RGBXYZ
 			for (int i = createdSpheres.Count - 1; i >= 0; i--)
 			{
 				createdSpheres[i].HideSphere();
+				uiGauge.UpdateCurrentNum(i);
 				yield return term;
 			}
 
