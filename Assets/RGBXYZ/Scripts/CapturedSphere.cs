@@ -5,6 +5,19 @@ using Random = UnityEngine.Random;
 
 namespace RGBXYZ
 {
+	public struct HitEventArgs
+	{
+		public HitEventArgs(Vector3 hitPoint, Vector3 normal, Color color)
+		{
+			this.hitPoint = hitPoint;
+			this.normal = normal;
+			this.color = color;
+		}
+		public Vector3 hitPoint { get; }
+		public Vector3 normal { get; }
+		public Color color { get; }
+	}
+
     public class CapturedSphere : MonoBehaviour
     {
         [SerializeField] private MeshRenderer meshRend;
@@ -14,8 +27,10 @@ namespace RGBXYZ
 		private float distance;
 
 		private Vector3 direction;
-		private float speed = 2f;
+		public float speed = 5f;
+		private string wallTag = "Wall";
 
+		public Action<HitEventArgs> onHitWall;
 		public void Init(int numOnSide, float distance)
 		{
 			rigid = GetComponent<Rigidbody>();
@@ -36,11 +51,23 @@ namespace RGBXYZ
 
         private void OnCollisionEnter(Collision collision)
         {
-            Vector3 normal = collision.GetContact(0).normal;
-
+			ContactPoint contactPoint = collision.GetContact(0);
+            Vector3 normal = contactPoint.normal;
             direction = Vector3.Reflect(direction, normal);
-
 			rigid.velocity = direction * speed;
+
+			if(collision.transform.TryGetComponent<CapturedWall>(out CapturedWall wall))
+			{
+				wall.OnHitByBall(contactPoint.point, normal, meshRend.material.color);
+			}
+
+
+			//if (collision.collider.CompareTag(wallTag))
+			//{
+			//	//onHitWall?.Invoke(new HitEventArgs(contactPoint.point, normal, meshRend.material.color));
+				
+
+			//}
         }
 
         private void Move()
