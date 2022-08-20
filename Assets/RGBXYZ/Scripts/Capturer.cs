@@ -44,13 +44,15 @@ namespace RGBXYZ
         {
 			if (Input.GetMouseButtonDown(0))
 			{
-				InstantiateSphere();
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+				if (Physics.Raycast(ray, out RaycastHit hit)) 
+                {
+					if (hit.collider.TryGetComponent<CapturedWall>(out CapturedWall wall))
+					{
+                        InstantiateSphere();
+                    }
+                }
 			}
 		}
-
-        private void OnMouseDown()
-        {
-            InstantiateSphere();
-        }
     }
 }
